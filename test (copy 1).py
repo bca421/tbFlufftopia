@@ -1,5 +1,14 @@
+# main.py
+
 import random
-import tkinter as tk
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.button import Button
+from kivy.uix.progressbar import ProgressBar
+from kivy.uix.popup import Popup
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.gridlayout import GridLayout
 
 # Define a list of enemies with random names, health, strength, defense, and loot for Flufftopia.
 enemies = [
@@ -23,39 +32,6 @@ enemies = [
     {"name": "Water Serpent", "health": 50, "strength": 12, "defense": 5, "loot": ["serpent skin", "water gem"]},
     {"name": "Lava Beast", "health": 90, "strength": 20, "defense": 10, "loot": ["lava core", "molten rock"]},
     {"name": "Thunder Eagle", "health": 35, "strength": 15, "defense": 6, "loot": ["eagle feather", "thunder gem"]}
-]
-
-# Define a list of NPCs with random names and dialogues for Flufftopia.
-npcs = [
-    {"name": "Arin the Wise", "dialogue": "Hello traveler!"},
-    {"name": "Borok the Merchant", "dialogue": "Would you like to buy something?"},
-    {"name": "Cynric the Blacksmith", "dialogue": "I can forge weapons for you."},
-    {"name": "Dagna the Healer", "dialogue": "I can heal your wounds."},
-    {"name": "Eldrin the Guard", "dialogue": "Stay out of trouble."},
-    {"name": "Finn the Farmer", "dialogue": "It's a hard day's work."},
-    {"name": "Gilda the Innkeeper", "dialogue": "Need a room for the night?"},
-    {"name": "Haldor the Fisherman", "dialogue": "Caught any big ones lately?"},
-    {"name": "Ivar the Bard", "dialogue": "Shall I sing you a song?"},
-    {"name": "Jorvik the Alchemist", "dialogue": "I have potions for every need."},
-    {"name": "Kael the Scholar", "dialogue": "Knowledge is power."},
-    {"name": "Lorna the Thief", "dialogue": "Keep an eye on your belongings."},
-    {"name": "Mara the Hunter", "dialogue": "The forest is my domain."},
-    {"name": "Nissa the Wizard", "dialogue": "Magic is the key to all things."},
-    {"name": "Orla the Priest", "dialogue": "May the gods watch over you."}
-]
-
-# Define a list of weapons with random names and damage values for Flufftopia.
-weapons = [
-    {"name": "Flame Sword", "damage": 15},
-    {"name": "Ice Axe", "damage": 12},
-    {"name": "Storm Bow", "damage": 10},
-    {"name": "Shadow Dagger", "damage": 8},
-    {"name": "Light Mace", "damage": 14},
-    {"name": "Nature Staff", "damage": 9},
-    {"name": "Thunder Crossbow", "damage": 11},
-    {"name": "Wind Spear", "damage": 13},
-    {"name": "Earth Halberd", "damage": 16},
-    {"name": "Sun Warhammer", "damage": 18}
 ]
 
 # Dictionary of events and corresponding locations
@@ -216,259 +192,310 @@ events = {
     ]
 }
 
-# Define locations with descriptions and secrets
+# Define the descriptions for each location
 locations = {
     "village": {
         "description": "A quaint village with friendly inhabitants and a bustling marketplace."
     },
     "enchanted_forest": {
-        "description": "An enchanted forest filled with glowing plants and mystical creatures. The air is thick with magic.",
-        "secret": "You notice a faint trail of sparkling dust leading deeper into the forest.",
-        "secret_location": "fairy_glade"
+        "description": "A mystical forest filled with magical creatures and ancient secrets."
     },
     "ancient_ruins": {
-        "description": "Ruins of an ancient civilization. Crumbling structures and broken statues are all that remain.",
-        "secret": "You find a hidden staircase beneath a collapsed archway.",
-        "secret_location": "forgotten_tomb"
+        "description": "Ruins of an ancient civilization, filled with hidden treasures and dangers."
+    },
+    "fairy_glade": {
+        "description": "A beautiful glade where fairies live, filled with sparkling lights and flowers."
+    },
+    "forgotten_tomb": {
+        "description": "A dark and eerie tomb filled with ancient traps and treasures."
     },
     "mystic_mountains": {
-        "description": "Tall mountains shrouded in mist. The peaks are said to hold great treasures and dangers.",
-        "secret": "A narrow path leads to a cave entrance hidden by mist.",
-        "secret_location": "dragon_lair"
+        "description": "A range of tall mountains with treacherous paths and rare herbs."
+    },
+    "dragon_lair": {
+        "description": "A lair where dragons dwell, filled with gold and rare treasures."
     },
     "haunted_castle": {
-        "description": "An old castle rumored to be haunted. Shadows move on their own and eerie sounds echo through the halls.",
-        "secret": "You discover a secret passage behind a tattered tapestry.",
-        "secret_location": "hidden_dungeon"
+        "description": "A spooky castle haunted by ghosts and filled with dark secrets."
+    },
+    "hidden_dungeon": {
+        "description": "A hidden dungeon filled with traps, treasures, and a dungeon master."
     },
     "serene_lake": {
-        "description": "A peaceful lake surrounded by lush greenery. The water is crystal clear and teeming with fish.",
-        "secret": "You see a small island in the middle of the lake with something glinting in the sunlight.",
-        "secret_location": "mystic_island"
+        "description": "A peaceful lake with clear water and abundant fish."
+    },
+    "mystic_island": {
+        "description": "An island with mystical creatures and hidden treasures."
     },
     "desert_oasis": {
-        "description": "A refreshing oasis in the middle of a vast desert. Palm trees and clear water provide a welcome respite.",
-        "secret": "You notice a hidden cave behind a waterfall.",
-        "secret_location": "hidden_sanctuary"
+        "description": "A hidden oasis in the desert, with fresh water and shade."
+    },
+    "hidden_sanctuary": {
+        "description": "A hidden sanctuary protected by a guardian spirit."
     },
     "frost_caverns": {
-        "description": "Caverns filled with ice and snow. The air is freezing and the ground is slippery.",
-        "secret": "A small crack in the ice leads to a hidden chamber.",
-        "secret_location": "ice_palace"
+        "description": "Ice caverns with rare crystals and icy paths."
+    },
+    "ice_palace": {
+        "description": "A palace made of ice, home to an ice queen and her secrets."
     },
     "sunken_temple": {
-        "description": "An ancient temple partially submerged in water. Fish swim through the halls and the walls are covered in algae.",
-        "secret": "A loose stone reveals a hidden passage.",
-        "secret_location": "treasure_vault"
+        "description": "A temple that has sunk into the sea, guarded by sea monsters."
+    },
+    "treasure_vault": {
+        "description": "A vault filled with rare gems and guarded by a spirit."
     },
     "verdant_meadow": {
-        "description": "A lush meadow filled with wildflowers and tall grass. Butterflies and bees flit about.",
-        "secret": "A patch of unusually tall grass hides a trapdoor.",
-        "secret_location": "underground_grotto"
+        "description": "A meadow with rare flowers and a friendly shepherd."
+    },
+    "underground_grotto": {
+        "description": "An underground grotto with glowing crystals and hidden paths."
     },
     "stormy_cliffs": {
-        "description": "High cliffs overlooking a stormy sea. The wind howls and waves crash against the rocks.",
-        "secret": "A narrow ledge leads to a cave entrance.",
-        "secret_location": "pirate_cove"
+        "description": "Cliffs battered by storms, home to pirates and hidden loot."
+    },
+    "pirate_cove": {
+        "description": "A cove where pirates hide their treasures and ambush strangers."
     },
     "burning_desert": {
-        "description": "A scorching desert with endless dunes and intense heat. Mirages play tricks on your eyes.",
-        "secret": "You find an ancient well that leads to an underground chamber.",
-        "secret_location": "secret_oasis"
+        "description": "A scorching desert with hidden oases and merchant caravans."
+    },
+    "secret_oasis": {
+        "description": "A secret oasis protected by a guardian spirit."
     },
     "whispering_woods": {
-        "description": "A forest where the trees seem to whisper secrets to those who listen.",
-        "secret": "You find a hidden grove with a mysterious tree.",
-        "secret_location": "ancient_tree"
+        "description": "Woods where trees whisper secrets and rare herbs grow."
+    },
+    "ancient_tree": {
+        "description": "An ancient tree with a spirit that guards hidden chambers."
     },
     "crystal_caves": {
-        "description": "Caves filled with glowing crystals that illuminate the dark passages.",
-        "secret": "A hidden tunnel leads to a cavern filled with rare crystals.",
-        "secret_location": "crystal_chamber"
+        "description": "Caves filled with rare crystals and hidden chambers."
+    },
+    "crystal_chamber": {
+        "description": "A chamber filled with crystals and guarded by a spirit."
     },
     "emerald_grove": {
-        "description": "A lush grove with emerald-green foliage and vibrant wildlife.",
-        "secret": "A hidden spring with healing waters lies deep within the grove.",
-        "secret_location": "healing_spring"
+        "description": "A grove with healing waters and a friendly ranger."
+    },
+    "healing_spring": {
+        "description": "A spring with healing properties, guarded by a spirit."
     },
     "dragon_peak": {
-        "description": "A towering mountain peak said to be home to dragons.",
-        "secret": "A narrow path leads to a hidden dragon's nest.",
-        "secret_location": "dragon_nest"
+        "description": "A peak where dragons nest, guarded by a fierce dragon."
+    },
+    "dragon_nest": {
+        "description": "A nest of dragons with hidden treasures and dangers."
     }
 }
 
-def game_intro():
-    """Displays the game introduction for Flufftopia."""
-    print("Welcome to Flufftopia!")
-    print("In a land of mystery and magic, you will embark on a journey like no other.")
-    print("Explore ancient ruins, enchanted forests, and hidden villages.")
-    print("Uncover secrets long forgotten and treasures untold.")
-    print("Your goal is to survive, grow stronger, and uncover the ultimate treasure.")
-    print("Good luck, brave adventurer!\n")
+class FlufftopiaApp(App):
+    def build(self):
+        self.player = self.player_setup()
+        self.location_index = 0
+        self.current_enemy = None
 
-def player_setup():
-    """Sets up the player character with initial attributes for Flufftopia."""
-    print("Creating your character...")
-    player = {
-        "name": input("Enter your Hero's name: "),
-        "health": 100,
-        "strength": random.randint(10, 20),
-        "defense": random.randint(5, 15),
-        "agility": random.randint(5, 15),
-        "inventory": [],
-        "quests": []
-    }
-    print(f"\nWelcome, {player['name']}! Your adventure begins now.")
-    print(f"Stats: Health = {player['health']}, Strength = {player['strength']}, Defense = {player['defense']}, Agility = {player['agility']}")
-    print("\nThe journey ahead is perilous, but you feel ready to face any challenge.\n")
-    return player
+        main_layout = BoxLayout(orientation='vertical')
 
-def use_skill(player, skill, target):
-    """Applies a skill used by the player on the target in Flufftopia."""
-    if skill == "fireball":
-        damage = player["strength"] * 2 - target["defense"]
-        target["health"] -= max(0, damage)
-        print(f"You cast a fireball at {target['name']} for {damage} damage!")
-    elif skill == "f":
-        damage = player["strength"] * 2 - target["defense"]
-        target["health"] -= max(0, damage)
-        print(f"You cast a fireball at {target['name']} for {damage} damage!")
-    elif skill == "heal":
-        heal_amount = player["strength"] * 2
-        player["health"] = min(100, player["health"] + heal_amount)
-        print(f"You heal yourself for {heal_amount} health points!")
-    elif skill == "h":
-        heal_amount = player["strength"] * 2
-        player["health"] = min(100, player["health"] + heal_amount)
-        print(f"You heal yourself for {heal_amount} health points!")
-    # Add more skills as needed
+        self.health_bar = ProgressBar(max=100, value=self.player['health'])
+        main_layout.add_widget(self.health_bar)
 
-def start_quest(player, quest_name):
-    """Starts a new quest for the player in Flufftopia."""
-    print(f"You have started the quest: {quest_name}")
-    player["quests"].append(quest_name)
-    if quest_name == "Find the Ancient Artifact":
-        print("You need to explore the ancient ruins to find the artifact.")
-    elif quest_name == "Defeat the Dragon":
-        print("You must find and defeat the dragon on Dragon Peak.")
-    # Add more quests as needed
+        self.info_label = Label(text="Welcome to Flufftopia!", size_hint_y=None, height=400)
+        self.scroll_view = ScrollView(size_hint=(1, None), size=(400, 400))
+        self.scroll_view.add_widget(self.info_label)
+        main_layout.add_widget(self.scroll_view)
 
-def combat(player, enemy):
-    """Handles combat between the player and an enemy."""
-    print(f"A wild {enemy['name']} appears!")
-    while player["health"] > 0 and enemy["health"] > 0:
-        print(f"\n{player['name']}'s Health: {player['health']}")
-        print(f"{enemy['name']}'s Health: {enemy['health']}")
-        action = input("Do you want to [A]ttack, [R]un, or use a [S]kill? > ").lower()
-        
-        if action == 'a':
-            player_attack(player, enemy)
-            if enemy["health"] > 0:
-                enemy_attack(player, enemy)
-        elif action == 'r':
-            if random.choice([True, False]):
-                print(f"You managed to escape from the {enemy['name']}!")
-                return
-            else:
-                print(f"You failed to escape. The {enemy['name']} attacks!")
-                enemy_attack(player, enemy)
-        elif action == 's':
-            skill = input("Choose a skill ([f]ireball/[h]eal): ").lower()
-            use_skill(player, skill, enemy)
-            if enemy["health"] > 0:
-                enemy_attack(player, enemy)
+        self.inventory_label = Label(text="Inventory: " + ', '.join(self.player['inventory']))
+        main_layout.add_widget(self.inventory_label)
+
+        button_layout = GridLayout(cols=5, size_hint_y=None, height=50)
+        main_layout.add_widget(button_layout)
+
+        self.next_button = Button(text="Next")
+        self.next_button.bind(on_press=self.next_location)
+        button_layout.add_widget(self.next_button)
+
+        self.skill_button = Button(text="Use Skill")
+        self.skill_button.bind(on_press=self.show_skill_popup)
+        button_layout.add_widget(self.skill_button)
+
+        self.attack_button = Button(text="Attack")
+        self.attack_button.bind(on_press=self.attack_enemy)
+        button_layout.add_widget(self.attack_button)
+
+        self.defend_button = Button(text="Defend")
+        self.defend_button.bind(on_press=self.defend)
+        button_layout.add_widget(self.defend_button)
+
+        self.run_button = Button(text="Run")
+        self.run_button.bind(on_press=self.run_from_combat)
+        button_layout.add_widget(self.run_button)
+
+        self.enable_combat_buttons(False)  # Disable combat buttons initially
+
+        return main_layout
+
+    def game_intro(self):
+        intro_text = (
+            "Welcome to Flufftopia!\n"
+            "In a land of mystery and magic, you will embark on a journey like no other.\n"
+            "Explore ancient ruins, enchanted forests, and hidden villages.\n"
+            "Uncover secrets long forgotten and treasures untold.\n"
+            "Your goal is to survive, grow stronger, and uncover the ultimate treasure.\n"
+            "Good luck, brave adventurer!\n"
+        )
+        self.info_label.text = intro_text
+
+    def player_setup(self):
+        player = {
+            "name": "Hero",
+            "health": 100,
+            "strength": random.randint(10, 20),
+            "defense": random.randint(5, 15),
+            "agility": random.randint(5, 15),
+            "inventory": ["health potion"],
+            "quests": []
+        }
+        return player
+
+    def clear_screen(self):
+        self.info_label.text = ""
+
+    def describe_location(self, location):
+        self.info_label.text += f"\nYou are at the {location.replace('_', ' ').title()}.\n{locations[location]['description']}"
+
+    def random_event(self, location):
+        self.clear_screen()
+        if location in events:
+            event = random.choice(events[location])
+            self.info_label.text += f"\n{event}"
+            if "guardian" in event or "encounter" in event:
+                self.current_enemy = random.choice(enemies)
+                self.info_label.text += f"\nA wild {self.current_enemy['name']} appears!"
+                self.enable_combat_buttons(True)
+            elif "trap" in event or "escape" in event:
+                self.player["health"] -= 10
+                self.health_bar.value = self.player["health"]
+                self.info_label.text += f"\nYou lose 10 health. Current health: {self.player['health']}"
+            elif "potion" in event or "healing" in event:
+                self.player["health"] = min(100, self.player["health"] + 10)
+                self.health_bar.value = self.player["health"]
+                self.info_label.text += f"\nYou gain 10 health. Current health: {self.player['health']}"
+        self.check_player_health()
+
+    def combat(self, enemy):
+        self.clear_screen()
+        self.info_label.text += f"\n{self.player['name']}'s Health: {self.player['health']}"
+        self.info_label.text += f"\n{enemy['name']}'s Health: {enemy['health']}"
+
+        damage = max(0, self.player["strength"] - enemy["defense"] + random.randint(-5, 5))
+        enemy["health"] -= damage
+        self.info_label.text += f"\nYou attack the {enemy['name']} for {damage} damage!"
+
+        if enemy["health"] <= 0:
+            self.info_label.text += f"\nYou have defeated the {enemy['name']}!"
+            loot = random.choice(enemy["loot"])
+            self.player["inventory"].append(loot)
+            self.inventory_label.text = "Inventory: " + ', '.join(self.player["inventory"])
+            self.info_label.text += f"\nYou found a {loot} on the {enemy['name']}!"
+            self.enable_combat_buttons(False)
+            self.proceed_if_enemy_defeated()
+            return
+
+        damage = max(0, enemy["strength"] - self.player["defense"] + random.randint(-5, 5))
+        self.player["health"] -= damage
+        self.health_bar.value = self.player["health"]
+        self.info_label.text += f"\nThe {enemy['name']} attacks you for {damage} damage!"
+
+        self.check_player_health()
+
+    def defend(self, instance):
+        self.clear_screen()
+        self.info_label.text += f"\n{self.player['name']} is defending!"
+        self.player["defense"] *= 2
+        self.enemy_attack(self.current_enemy)
+
+    def enemy_attack(self, enemy):
+        damage = max(0, enemy["strength"] - self.player["defense"] + random.randint(-5, 5))
+        self.player["health"] -= damage
+        self.health_bar.value = self.player["health"]
+        self.info_label.text += f"\nThe {enemy['name']} attacks you for {damage} damage!"
+        self.player["defense"] = int(self.player["defense"] / 2)
+        self.check_player_health()
+
+    def check_player_health(self):
+        if self.player["health"] <= 0:
+            self.info_label.text += "\nYou have been defeated. Game over."
+            self.next_button.disabled = True
+            self.enable_combat_buttons(False)
+
+    def proceed_if_enemy_defeated(self):
+        if self.current_enemy and self.current_enemy["health"] <= 0:
+            self.current_enemy = None
+            self.next_location(None)
+
+    def next_location(self, instance):
+        if self.player["health"] <= 0:
+            return
+
+        if self.current_enemy:
+            self.info_label.text += f"\nYou must defeat the {self.current_enemy['name']} to proceed!"
+            return
+
+        if self.location_index < len(locations):
+            location = list(locations.keys())[self.location_index]
+            self.describe_location(location)
+            self.random_event(location)
+            self.location_index += 1
         else:
-            print("Invalid action. Try again.")
-        
-    if player["health"] <= 0:
-        print("You have been defeated. Game over.")
-    elif enemy["health"] <= 0:
-        print(f"You have defeated the {enemy['name']}!")
-        loot = random.choice(enemy["loot"])
-        player["inventory"].append(loot)
-        print(f"You found a {loot} on the {enemy['name']}!")
+            self.info_label.text += "\nCongratulations! You have completed the journey through Flufftopia!"
+            self.next_button.disabled = True
 
-def player_attack(player, enemy):
-    """Calculates and applies damage dealt by the player to the enemy."""
-    damage = max(0, player["strength"] - enemy["defense"] + random.randint(-5, 5))
-    enemy["health"] -= damage
-    print(f"You attack the {enemy['name']} for {damage} damage!")
+    def use_skill(self, skill, target, popup):
+        self.clear_screen()
+        if skill == "fireball" or skill == "f":
+            damage = self.player["strength"] * 2 - target["defense"]
+            target["health"] -= max(0, damage)
+            self.info_label.text += f"\nYou cast a fireball at {target['name']} for {damage} damage!"
+        elif skill == "heal" or skill == "h":
+            heal_amount = self.player["strength"] * 2
+            self.player["health"] = min(100, self.player["health"] + heal_amount)
+            self.health_bar.value = self.player["health"]
+            self.info_label.text += f"\nYou heal yourself for {heal_amount} health points!"
+        popup.dismiss()
+        self.check_player_health()
+        self.proceed_if_enemy_defeated()
 
-def enemy_attack(player, enemy):
-    """Calculates and applies damage dealt by the enemy to the player."""
-    damage = max(0, enemy["strength"] - player["defense"] + random.randint(-5, 5))
-    player["health"] -= damage
-    print(f"The {enemy['name']} attacks you for {damage} damage!")
+    def show_skill_popup(self, instance):
+        layout = BoxLayout(orientation='vertical')
+        fireball_button = Button(text="Fireball", size_hint=(1, 0.5))
+        heal_button = Button(text="Heal", size_hint=(1, 0.5))
 
-def random_event(location, player):
-    """Triggers a random event based on the current location."""
-    if location in events:
-        event = random.choice(events[location])
-        print(event)
-        if "guardian" in event or "encounter" in event:
-            combat(player, random.choice(enemies))
-        elif "trap" in event or "escape" in event:
-            player["health"] -= 10
-            print(f"You lose 10 health. Current health: {player['health']}")
-        elif "potion" in event or "healing" in event:
-            player["health"] += 10
-            print(f"You gain 10 health. Current health: {player['health']}")
+        popup = Popup(title="Choose a Skill", content=layout, size_hint=(0.5, 0.3))
+        fireball_button.bind(on_press=lambda x: self.use_skill("fireball", self.current_enemy, popup))
+        heal_button.bind(on_press=lambda x: self.use_skill("heal", self.player, popup))
+        layout.add_widget(fireball_button)
+        layout.add_widget(heal_button)
 
-def describe_location(location, locations):
-    """Displays the description of the current location."""
-    print(f"You are at the {location.replace('_', ' ').title()}.")
-    print(locations[location]["description"])
+        popup.open()
 
-def discover_secret_path(location, locations):
-    """Checks for and handles the discovery of secret paths in the current location."""
-    if "secret" in locations[location]:
-        print(locations[location]["secret"])
-        choice = input("Do you want to explore the secret path? (y/no) > ")
-        if choice.lower() == "y":
-            return locations[location]["secret_location"]
-    return location
-
-def game_loop(player, locations):
-    """Main game loop handling player actions and events."""
-    current_location = "village"
-    while True:
-        print("\nWhat do you want to do?")
-        for idx, loc in enumerate(locations.keys(), start=1):
-            print(f"{idx}. Explore the {loc.replace('_', ' ').title()}")
-        print(f"{len(locations) + 1}. Check inventory")
-        print(f"{len(locations) + 2}. Quit")
-
-        choice = input("> ")
-
-        if choice.isdigit():
-            choice = int(choice)
-            if 1 <= choice <= len(locations):
-                current_location = list(locations.keys())[choice - 1]
-            elif choice == len(locations) + 1:
-                print(f"Inventory: {player['inventory']}")
-                print(f"Health: {player['health']}")
-                continue
-            elif choice == len(locations) + 2:
-                print("Thanks for playing!")
-                break
-            else:
-                print("Invalid choice. Try again.")
-                continue
+    def attack_enemy(self, instance):
+        if self.current_enemy:
+            self.combat(self.current_enemy)
         else:
-            print("Invalid choice. Try again.")
-            continue
+            self.info_label.text += "\nNo enemy to attack."
 
-        describe_location(current_location, locations)
-        current_location = discover_secret_path(current_location, locations)
-        random_event(current_location, player)
+    def run_from_combat(self, instance):
+        if self.current_enemy:
+            self.info_label.text += f"\nYou must defeat the {self.current_enemy['name']} to proceed!"
+        else:
+            self.info_label.text += "\nNo enemy to run from."
 
-        if player["health"] <= 0:
-            print("You have died. Game over.")
-            break
+    def enable_combat_buttons(self, enable):
+        self.attack_button.disabled = not enable
+        self.defend_button.disabled = not enable
+        self.skill_button.disabled = not enable
+        self.run_button.disabled = not enable
 
-# Start the game
 if __name__ == "__main__":
-    game_intro()
-    player = player_setup()
-    game_loop(player, locations)
+    FlufftopiaApp().run()
