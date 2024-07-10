@@ -61,11 +61,11 @@ weapons = [
 # Dictionary of events and corresponding locations
 events = {
     "village": [
-        "You meet a friendly villager named Bob who gives you a health potion.",
+        "You meet a friendly villager named Mordaci who gives you a health potion.",
         "You visit the marketplace and find interesting items for sale."
     ],
     "enchanted_forest": [
-        "You encounter a magical deer named Luna with glowing antlers.",
+        "You encounter a magical deer named Thomas with glowing antlers.",
         "You find a hidden fairy ring surrounded by mushrooms.",
         "You get lost among the towering trees and magical plants."
     ],
@@ -75,7 +75,7 @@ events = {
         "You get trapped in a collapsing corridor."
     ],
     "fairy_glade": [
-        "You meet a friendly fairy named Tinker who offers you some fairy dust.",
+        "You meet a friendly fairy named Steve who offers you some fairy dust.",
         "You find a hidden treasure chest filled with sparkling gems.",
         "You are surrounded by a group of curious fairies."
     ],
@@ -90,12 +90,12 @@ events = {
         "You get caught in a sudden avalanche."
     ],
     "dragon_lair": [
-        "You encounter a dragon named Smaug sleeping on a pile of gold.",
+        "You encounter a dragon sleeping on a pile of gold.",
         "You find a rare dragon egg hidden in the lair.",
         "You narrowly escape a dragon's fiery breath."
     ],
     "haunted_castle": [
-        "You encounter a ghost named Casper haunting the halls.",
+        "You encounter a ghost haunting the halls.",
         "You find an old diary with secrets of the castle.",
         "You get trapped in a room with moving walls."
     ],
@@ -130,17 +130,17 @@ events = {
         "You get caught in a sudden ice slide."
     ],
     "ice_palace": [
-        "You meet an ice queen named Elsa who offers you a gift.",
+        "You meet an ice queen who offers you a gift.",
         "You find a hidden chamber filled with ice sculptures.",
         "You narrowly escape a freezing trap."
     ],
     "sunken_temple": [
-        "You encounter a sea monster named Kraken guarding the temple.",
+        "You encounter a sea monster guarding the temple.",
         "You find a hidden treasure chest filled with gold.",
         "You narrowly escape a collapsing tunnel."
     ],
     "treasure_vault": [
-        "You encounter a guardian spirit named Poseidon protecting the vault.",
+        "You encounter a guardian spirit protecting the vault.",
         "You find a hidden stash of rare gems.",
         "You narrowly escape a trap filled with water."
     ],
@@ -155,12 +155,12 @@ events = {
         "You narrowly escape a cave-in."
     ],
     "stormy_cliffs": [
-        "You encounter a pirate named Jack who offers to share his treasure.",
+        "You encounter a pirate named Jook who offers to share his treasure.",
         "You find a hidden cave filled with pirate loot.",
         "You narrowly escape a falling rock."
     ],
     "pirate_cove": [
-        "You encounter a pirate captain named Blackbeard guarding his treasure.",
+        "You encounter a pirate captain named Blackballs guarding his treasure.",
         "You find a hidden stash of gold coins.",
         "You narrowly escape a pirate ambush."
     ],
@@ -170,7 +170,7 @@ events = {
         "You get caught in a sudden sandstorm."
     ],
     "secret_oasis": [
-        "You encounter a guardian spirit named Ra protecting the oasis.",
+        "You encounter a guardian spirit named Riva protecting the oasis.",
         "You find a hidden chamber filled with ancient artifacts.",
         "You narrowly escape a collapsing tunnel."
     ],
@@ -180,7 +180,7 @@ events = {
         "You get lost among the whispering trees."
     ],
     "ancient_tree": [
-        "You encounter a tree spirit named Yggdrasil who offers you a gift.",
+        "You encounter a tree spirit named Yiggy who offers you a gift.",
         "You find a hidden chamber filled with ancient scrolls.",
         "You narrowly escape a falling branch."
     ],
@@ -200,7 +200,7 @@ events = {
         "You get caught in a sudden thunderstorm."
     ],
     "healing_spring": [
-        "You encounter a guardian spirit named Gaia protecting the spring.",
+        "You encounter a guardian spirit protecting the spring.",
         "You find a hidden chamber filled with rare herbs.",
         "You narrowly escape a collapsing tunnel."
     ],
@@ -210,7 +210,7 @@ events = {
         "You narrowly escape a dragon's fiery breath."
     ],
     "dragon_nest": [
-        "You meet a dragon rider named Aragon who offers you a ride.",
+        "You meet a dragon rider who offers you a ride.",
         "You find a hidden stash of dragon scales.",
         "You narrowly escape a dragon's fiery breath."
     ]
@@ -311,7 +311,7 @@ def player_setup():
     """Sets up the player character with initial attributes for Flufftopia."""
     print("Creating your character...")
     player = {
-        "name": input("Enter your character's name: "),
+        "name": input("Enter your Hero's name: "),
         "health": 100,
         "strength": random.randint(10, 20),
         "defense": random.randint(5, 15),
@@ -330,7 +330,15 @@ def use_skill(player, skill, target):
         damage = player["strength"] * 2 - target["defense"]
         target["health"] -= max(0, damage)
         print(f"You cast a fireball at {target['name']} for {damage} damage!")
+    elif skill == "f":
+        damage = player["strength"] * 2 - target["defense"]
+        target["health"] -= max(0, damage)
+        print(f"You cast a fireball at {target['name']} for {damage} damage!")
     elif skill == "heal":
+        heal_amount = player["strength"] * 2
+        player["health"] = min(100, player["health"] + heal_amount)
+        print(f"You heal yourself for {heal_amount} health points!")
+    elif skill == "h":
         heal_amount = player["strength"] * 2
         player["health"] = min(100, player["health"] + heal_amount)
         print(f"You heal yourself for {heal_amount} health points!")
@@ -366,7 +374,7 @@ def combat(player, enemy):
                 print(f"You failed to escape. The {enemy['name']} attacks!")
                 enemy_attack(player, enemy)
         elif action == 's':
-            skill = input("Choose a skill (fireball/heal): ").lower()
+            skill = input("Choose a skill ([f]ireball/[h]eal): ").lower()
             use_skill(player, skill, enemy)
             if enemy["health"] > 0:
                 enemy_attack(player, enemy)
